@@ -1,0 +1,44 @@
+// this is a sample of java.net.http
+import java.net.http.*; 
+import java.net.*;
+import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+
+ try {
+            HttpClient HC = HttpClient.newHttpClient(); 
+            //creates a HttpClient while calling the methods of newHttpClient since HttpClient is and abstract class.
+            HttpRequest HR = HttpRequest.newBuilder(new URI("https://darksky.net/forecast/0.3163,32.5822/us12/en")).build();
+            //HttpRequest makes the request in the URL
+            HttpResponse<String> myRes = HC.send(HR, HttpResponse.BodyHandlers.ofString());
+            /*this gets the response.
+            it is importand to mention that the classes in java.net.http are abstract.
+            the ofString in HttpResponse can be a ofInputStream, ofByteArray, and so on but the <String> also changes accordingly.
+            */
+
+
+            HttpHeaders head = myRes.headers();  //allows access to headers 
+            Map<String, List<String>> headmap = head.map();
+            Set<String> fiel = headmap.keySet();  //get the set of header fields
+           
+           /*
+           the following codes will be used to parse the print out.
+           To achieve this we will you the jsoup package which can be downloaded from online
+           
+           */
+            String ab = myRes.body();// this saves the html document from HttpResponse myRes as a String.
+            Document doc = Jsoup.parse(ab); //Creates the document to be parsed
+            String  abb = doc.body().text();  // this parses the document to a text format. Though it doesnot buffer the output into seperate lines
+             System.out.println(abb);// this prints a non html to the console
+            
+           
+               } catch (URISyntaxException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+       }
+
+         }
+   }
